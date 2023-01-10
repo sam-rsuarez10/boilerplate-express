@@ -1,4 +1,5 @@
 require('dotenv').config();
+let bodyParser = require('body-parser');
 let express = require('express');
 let app = express();
 
@@ -6,6 +7,9 @@ let app = express();
     console.log(`${req.method} ${req.path} - ${req.ip}`);
     next();
 });*/
+
+app.use('/name', bodyParser.urlencoded({extended: false}));
+//app.use(bodyParser.json());
 
 app.get('/', (req, res) => res.sendFile(__dirname + '/index.html'));
 app.use('/public', express.static(__dirname + '/public'));
@@ -33,7 +37,14 @@ const name_response = (req, res) => {
     return res.json({ name: `${first} ${last}` });
 }
 
-app.route('/name').get(name_response).post(name_response);
+//app.route('/name').get(name_response).post(name_response);
+
+app.post('/name', (req, res) => {
+    let first = req.body.first;
+    let last = req.body.last;
+    return res.json({ name: `${first} ${last}` });
+});
+
 
 
 module.exports = app;
